@@ -1,5 +1,9 @@
 # Docker tutorial
 
+Learn how to use bind mounts, run multi-container apps, connect to a MySQL database and use Docker Compose.
+
+From the official [Docker tutorial page](https://www.docker.com/101-tutorial/).
+
 ## Bind mounts
 
 Bind mounts are used to mount our source code into the container to let it see code changes, respond, and let us see the changes right away.
@@ -47,13 +51,13 @@ docker rm -f <container-id>
 docker build -t getting-started .
 ```
 
-## Multi-Container Apps
+## Multi-container apps
 
-Update our application with 2 containers : one hosting the app and the other the MySQL database.
+Update the application stack with 2 containers : one hosting the app and the other the MySQL database.
 
 ![multi-app-architecture](img/multi-app-architecture.png "multi-app-architecture")
 
-### 1. Start the MySQL container
+### Start the MySQL container
 
 1. Create the network
 ```
@@ -110,17 +114,17 @@ Check that the `todos` database is listed.
 
 Exit the sql terminal with `exit`.
 
-4. Identify the host name
+### Identify the host name
 
-- Start a new container using the `nicolaka/netshoot` image and connect it to the same network.
+1. Start a new container using the `nicolaka/netshoot` image and connect it to the same network.
 ```
 docker run -it --network todo-app nicolaka/netshoot
 ```
-- Lookup the IP address for the hostname `mysql`.
+2. Lookup the IP address for the hostname `mysql`.
 ```
 dig mysql
 ```
-- Look for the host name in the ANSWER SECTION :
+3. Look for the host name in the `ANSWER SECTION` :
 
 ```
 ; <<>> DiG 9.18.8 <<>> mysql
@@ -143,7 +147,9 @@ mysql.          600 IN  A   172.23.0.2
 
 The host name is `mysql`.
 
-5. Run the app and connect it to the database.
+### Launch the application stack
+
+1. Run the app and connect it to the database
 
 ```
 docker run -dp 3000:3000 \
@@ -170,23 +176,25 @@ docker run -dp 3000:3000 \
 - `sh -c "yarn install && yarn run dev"` : the command to run.
 
 
-6. Watch the logs
+2. Check that the container is connected to the mysql database.
+
+Watch the logs :
 
 ```
 docker ps
 docker logs -f <container-id>
 ```
-Check that the container is connected to the mysql database.
 
-7. Open the app in your browser and add a few items to your todo list.
+3. Check that the database is being updated.
 
-8. Connect to the mysql database.
+- Open the app in your browser and add a few items to your todo list.
+- Connect to the mysql database.
 ```
 docker exec -it <mysql-container-id> mysql -p todos
 ```
 The password is `secret`.
 
-In the MySQL shell, run the following :
+- In the MySQL shell, print the database items :
 ```
 select * from todo_items;
 ```
